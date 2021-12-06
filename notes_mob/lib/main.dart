@@ -3,10 +3,15 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
+import 'package:notes_mob/create.dart';
 import 'package:notes_mob/models/note.dart';
+import 'package:notes_mob/update.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const MaterialApp(
+    title: 'CRUD Note',
+    home: MyApp(),
+  ));
 }
 
 class MyApp extends StatefulWidget {
@@ -47,44 +52,46 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter CRUD',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('List Notes'),
       ),
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('CRUD Sample'),
-        ),
-        body: RefreshIndicator(
-          onRefresh: () async {
-            _retrieveNotes();
-          },
-          child: ListView.builder(
-            itemCount: notes.length,
-            itemBuilder: (BuildContext context, int index) {
-              return Card(
-                child: InkWell(
+      body: RefreshIndicator(
+        onRefresh: () async {
+          _retrieveNotes();
+        },
+        child: ListView.builder(
+          itemCount: notes.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Card(
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const UpdateNote()),
+                  );
+                },
+                child: ListTile(
+                  title: Text(notes[index].noteDescription),
                   onTap: () {},
-                  child: ListTile(
-                    title: Text(notes[index].noteDescription),
-                    onTap: () {},
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () {
-                        _deleteNote(notes[index].id);
-                      },
-                    ),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: () => _deleteNote(notes[index].id),
                   ),
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => print('teste'),
-          child: const Icon(Icons.add),
-        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const CreateNote()),
+          );
+        },
+        child: const Icon(Icons.add),
       ),
     );
   }
