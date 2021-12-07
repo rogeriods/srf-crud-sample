@@ -2,9 +2,13 @@ class Note {
   final int id;
   final String noteDescription;
 
-  Note({required this.id, required this.noteDescription});
+  // Constructor
+  Note({
+    required this.id,
+    required this.noteDescription,
+  });
 
-  // Convert map to json
+  // Parser from JSON
   factory Note.fromJson(Map<String, dynamic> json) {
     return Note(
       id: json['id'],
@@ -12,7 +16,7 @@ class Note {
     );
   }
 
-  // Convert json to map
+  // Parser from Map
   factory Note.fromMap(Map<String, dynamic> map) {
     return Note(
       id: map['id'],

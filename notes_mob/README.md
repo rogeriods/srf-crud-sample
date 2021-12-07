@@ -1,10 +1,16 @@
-# notes_mob
+# Available Scripts
 
-A new Flutter project.
+In the project directory, you can run:
+
+### `flutter pub get`
+
+Get dependencies.
+
+### `flutter run`
+
+Runs the app.
 
 ## Getting Started
-
-This project is a starting point for a Flutter application.
 
 A few resources to get you started if this is your first Flutter project:
 

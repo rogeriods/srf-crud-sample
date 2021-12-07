@@ -10,6 +10,7 @@ import 'package:notes_mob/update.dart';
 void main() {
   runApp(const MaterialApp(
     title: 'CRUD Note',
+    debugShowCheckedModeBanner: false,
     home: MyApp(),
   ));
 }
@@ -24,16 +25,19 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String apiUrl = "http://rds-nodes-api.herokuapp.com/api";
+  // Local variables
+  String apiUrl = 'http://rds-nodes-api.herokuapp.com/api';
   Client client = http.Client();
   List<Note> notes = [];
 
   @override
   void initState() {
+    // Load list of notes before construct the page
     _retrieveNotes();
     super.initState();
   }
 
+  // Method for get request
   _retrieveNotes() async {
     notes = [];
     List res = json.decode((await client.get(Uri.parse('$apiUrl/notes'))).body);
@@ -42,9 +46,11 @@ class _MyAppState extends State<MyApp> {
       notes.add(Note.fromMap(element));
     }
 
+    // Update current state
     setState(() {});
   }
 
+  // Method for delete request
   void _deleteNote(int id) async {
     await client.delete(Uri.parse('$apiUrl/notes/$id'));
     _retrieveNotes();
@@ -54,7 +60,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('List Notes'),
+        title: const Text('Note(s)'),
       ),
       body: RefreshIndicator(
         onRefresh: () async {
@@ -65,15 +71,21 @@ class _MyAppState extends State<MyApp> {
           itemBuilder: (BuildContext context, int index) {
             return Card(
               child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const UpdateNote()),
-                  );
-                },
                 child: ListTile(
                   title: Text(notes[index].noteDescription),
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => UpdateNote(
+                          id: notes[index].id,
+                          noteDescription: notes[index].noteDescription,
+                          apiUrl: apiUrl,
+                          client: client,
+                        ),
+                      ),
+                    );
+                  },
                   trailing: IconButton(
                     icon: const Icon(Icons.delete),
                     onPressed: () => _deleteNote(notes[index].id),
@@ -88,7 +100,9 @@ class _MyAppState extends State<MyApp> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const CreateNote()),
+            MaterialPageRoute(
+              builder: (context) => CreateNote(apiUrl: apiUrl, client: client),
+            ),
           );
         },
         child: const Icon(Icons.add),
