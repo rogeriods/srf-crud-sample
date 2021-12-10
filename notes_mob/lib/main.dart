@@ -56,6 +56,34 @@ class _MyAppState extends State<MyApp> {
     _retrieveNotes();
   }
 
+  // Dialog delete validation
+  void _showDialog(int id) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Delete"),
+          content: const Text("Are sure you want to delete this note?"),
+          actions: <Widget>[
+            ElevatedButton(
+              child: const Text("Ok"),
+              onPressed: () {
+                _deleteNote(id);
+                Navigator.of(context).pop();
+              },
+            ),
+            ElevatedButton(
+              child: const Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,7 +116,7 @@ class _MyAppState extends State<MyApp> {
                   },
                   trailing: IconButton(
                     icon: const Icon(Icons.delete),
-                    onPressed: () => _deleteNote(notes[index].id),
+                    onPressed: () => _showDialog(notes[index].id),
                   ),
                 ),
               ),
